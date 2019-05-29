@@ -23,6 +23,8 @@ final int START_BUTTON_Y = 360;
 Player player;
 Item[] items;
 Enemy[] enemies;
+int playerHealth = 2;
+final int PLAYER_MAX_HEALTH = 5;
 
 final int GAME_INIT_TIMER = 7200;
 int gameTimer = GAME_INIT_TIMER;
@@ -165,9 +167,8 @@ void initGame(){
 		float newX = SOIL_SIZE * floor(random(SOIL_COL_COUNT));
 		float newY = SOIL_SIZE * ( i * 4 + floor(random(4)));
 
-    switch(i){
-      case 0: case 1 : case 2 : case 3 : case 4 : case 5 : items[i] = new Cabbage(newX,newY);
-    }
+    items[i] = (random(2)>1 )? new Cabbage(newX,newY) : new Clock(newX,newY);
+    println(newX,newY);
 
 		// Requirement #3:
 		// 	- Randomly decide if a cabbage or a clock should appear in a random soil every 4 rows (6 items in total)
@@ -240,8 +241,14 @@ void draw() {
 		image(sweethome, 0, SOIL_ROW_COUNT * SOIL_SIZE);
 
 		// Items
+   
 		// Requirement #3: Display and check collision with player for each item in Item[] items
-
+    for(int i =0; i<items.length;i++){
+      if (items[i] != null && items[i].isAlive){
+        items[i].display();
+        items[i].checkCollision(player);
+      }
+    }
 		// Player
 
 		player.update();
@@ -255,14 +262,7 @@ void draw() {
 			e.checkCollision(player);
 		}
 
-//cabbage
 
-
-for(Item e : items){
-  if(e == null)continue;
-  e.display();
-  e.checkCollision(player);
-}
 
 		// Caution Sign
 		Enemy nextRowEnemy = getEnemyByRow(player.row + 5);
@@ -347,12 +347,14 @@ void addTime(float seconds){
 }
 
 boolean isHit(float ax, float ay, float aw, float ah, float bx, float by, float bw, float bh){
-	return	ax + aw > bx &&    // a right edge past b left
+	if(	ax + aw > bx &&    // a right edge past b left
 		    ax < bx + bw &&    // a left edge past b right
 		    ay + ah > by &&    // a top edge past b bottom
-		    ay < by + bh;
+		    ay < by + bh){
+  return true;
 }
-
+return false;
+}
 boolean isMouseHit(float bx, float by, float bw, float bh){
 	return	mouseX > bx && 
 		    mouseX < bx + bw && 
