@@ -165,6 +165,10 @@ void initGame(){
 		float newX = SOIL_SIZE * floor(random(SOIL_COL_COUNT));
 		float newY = SOIL_SIZE * ( i * 4 + floor(random(4)));
 
+    switch(i){
+      case 0: case 1 : case 2 : case 3 : case 4 : case 5 : items[i] = new Cabbage(newX,newY);
+    }
+
 		// Requirement #3:
 		// 	- Randomly decide if a cabbage or a clock should appear in a random soil every 4 rows (6 items in total)
 		// 	- Create and store cabbages/clocks in the same items array
@@ -250,6 +254,15 @@ void draw() {
 			e.display();
 			e.checkCollision(player);
 		}
+
+//cabbage
+
+
+for(Item e : items){
+  if(e == null)continue;
+  e.display();
+  e.checkCollision(player);
+}
 
 		// Caution Sign
 		Enemy nextRowEnemy = getEnemyByRow(player.row + 5);
